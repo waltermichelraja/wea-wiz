@@ -1,0 +1,75 @@
+from datetime import datetime
+import pytz, requests, os
+from geopy.geocoders import Nominatim
+from dotenv import load_dotenv
+
+load_dotenv()
+
+class WeaWiz:
+    def __init__(self, city) -> None:
+        self.city=city
+        self.response=None; self.data=None
+        self.onec=None
+
+    def fetch_api(self):
+        ROOTW=f"https://api.openweathermap.org/data/2.5/weather?q={self.city}&appid={os.getenv("APIKEY")}&units=metric"
+        self.response=requests.get(ROOTW); self.data=self.response.json()
+
+    def fetch_root_onecall(self):#subscription required
+        lat, lon=self.get_coords()
+        ROOTOC=f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude=minutely,daily&appid={os.getenv("APIKEY")}&units=metric"
+        resp=requests.get(ROOTOC); self.onec=resp.json()
+
+    def get_coords_geopy(self, city):
+        geolocator = Nominatim(user_agent="WeaWiz (waltermichelraja2@gmail.com)")
+        location=geolocator.geocode(city)
+        if location: return location.latitude, location.longitude
+        else: return None, None
+
+    def get_coords(self):
+        coord=self.data.get("coord", {})
+        return coord.get("lat"), coord.get("lon")
+
+    def get_timestamp(self):
+        tzone = pytz.timezone('Asia/Kolkata')
+        ist_current = datetime.now(tzone)
+        tformat = ist_current.strftime('%Y-%m-%d %H:%M:%S')
+        return tformat
+
+
+
+
+
+
+from modules.setup import *
+
+wea=WeaWiz("dharmapuri")
+wea.fetch_api()
+
+data=wea.data
+
+if wea.response.status_code==200:
+    data=wea.response.json()
+    main=data.get("main", {})
+    sr=data.get("sys", {}).get("sunrise"); ss=data.get("sys", {}).get("sunset")
+    report={
+        "temperature":      main.get("temp"),
+        "feels like":       main.get("feels_like"),
+        "humidity":         str(main.get("humidity"))+"%",
+        "clouds":         str(data.get("clouds", {}).get("all"))+"%",
+        "pressure":         str(main.get("pressure"))+"mb",
+        "wind":             data['wind'].get('speed')
+    }
+
+    print(
+        "status code: {}\tlocation: {}\tlatitude: {}\tlongitude: {}".format(
+                                                                                            wea.response.status_code, 
+                                                                                            wea.city, 
+                                                                                            wea.get_coords()[0], 
+                                                                                            wea.get_coords()[1]), end="\n\n")
+    print("timestamp\t: {}\nWEATHER \t: {}".format(wea.get_timestamp(), data["weather"][0].get("description")))
+    for key, value in report.items(): 
+        print("{0}\t: {1}".format(key, value))
+    
+else:
+    print("error: unable to fetch data :/")
