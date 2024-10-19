@@ -3,7 +3,7 @@ import os
 from geopy.geocoders import Nominatim
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv("config/.env")
 
 class WeaWiz:
     def __init__(self, city) -> None:
