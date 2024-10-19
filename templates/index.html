@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeaWiz Weather App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>WeaWiz - Weather Wizard</h1>
+        <input type="text" id="cityInput" placeholder="Enter city name" />
+        <button id="getWeatherBtn">Get Weather</button>
+        <div id="weatherResult" class="weather-result">
+            <!-- Weather data will be displayed here -->
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
