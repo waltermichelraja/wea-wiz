@@ -46,3 +46,51 @@ button:hover {
     font-size: 18px;
     color: #555;
 }
+
+.search-container {
+    position: relative;
+    width: 80%;
+    margin: 20px auto;
+    text-align: left;
+}
+
+#cityInput {
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+#suggestions-list {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    max-height: 180px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    z-index: 1000;
+    text-align: left;
+}
+
+#suggestions-list li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    text-align: left;
+}
+
+#suggestions-list li:hover {
+    background-color: #f0f0f0;
+}

@@ -5,18 +5,15 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    # Render the HTML front end
     return render_template('index.html')
 
 @app.route('/weather', methods=['GET'])
 def get_weather():
     city = request.args.get('city')
     if city:
-        # Fetch weather data
         wea = WeaWiz(city)
         wea.fetch_api()
         if wea.response.status_code == 200:
-            # Process the response and return JSON
             data = wea.data
             main = data.get("main", {})
             report = {
@@ -33,6 +30,14 @@ def get_weather():
             return jsonify({"error": "Unable to fetch weather data."}), 500
     else:
         return jsonify({"error": "City not provided."}), 400
+
+@app.route('/get_location_suggestions', methods=['GET'])
+def get_location_suggestions():
+    query = request.args.get('q', '').strip()
+    if query:
+        suggestions = WeaWiz.get_location_suggestions(query)
+        return jsonify(suggestions)
+    return jsonify([])
 
 if __name__ == '__main__':
     app.run(debug=True)

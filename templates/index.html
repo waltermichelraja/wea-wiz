@@ -9,13 +9,15 @@
 <body>
     <div class="container">
         <h1>WeaWiz - Weather Wizard</h1>
-        <input type="text" id="cityInput" placeholder="Enter city name" />
+        <div class="search-container">
+            <input type="text" id="cityInput" placeholder="Enter city name" autocomplete="off" />
+            <ul id="suggestions-list" class="suggestions-list"></ul>
+        </div>
         <button id="getWeatherBtn">Get Weather</button>
         <div id="weatherResult" class="weather-result">
             <!-- Weather data will be displayed here -->
         </div>
+        <script src="{{ url_for('static', filename='app.js') }}"></script>
     </div>
-
-    <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

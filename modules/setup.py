@@ -26,3 +26,11 @@ class WeaWiz:
         tzone = pytz.timezone('Asia/Kolkata')
         ist_current = datetime.now(tzone)
         return ist_current.strftime('%Y-%m-%d %H:%M:%S')
+
+    @staticmethod
+    def get_location_suggestions(query):
+        geolocator = Nominatim(user_agent="weawiz_app")
+        locations = geolocator.geocode(query, exactly_one=False, limit=5)
+        if locations:
+            return [{"name": loc.address, "country": loc.raw.get("display_name").split(",")[-1].strip()} for loc in locations]
+        return []

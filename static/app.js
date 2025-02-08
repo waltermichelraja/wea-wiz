@@ -24,3 +24,40 @@ document.getElementById('getWeatherBtn').addEventListener('click', function() {
         alert('Please enter a city name');
     }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const inputField = document.getElementById('cityInput');
+    const suggestionsList = document.getElementById('suggestions-list');
+
+    inputField.addEventListener('input', function () {
+        const query = inputField.value.trim();
+        if (query.length < 2) {
+            suggestionsList.innerHTML = '';
+            return;
+        }
+
+        fetch(`/get_location_suggestions?q=${query}`)
+            .then(response => response.json())
+            .then(locations => {
+                suggestionsList.innerHTML = '';
+                locations.forEach(location => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${location.name}, ${location.country}`;
+                    listItem.addEventListener('click', () => {
+                        inputField.value = location.name;
+                        suggestionsList.innerHTML = '';
+                    });
+                    suggestionsList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching location suggestions:', error);
+            });
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!inputField.contains(event.target) && !suggestionsList.contains(event.target)) {
+            suggestionsList.innerHTML = '';
+        }
+    });
+});
